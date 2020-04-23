@@ -6,7 +6,9 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "env": "expo-env --env=development --configPath=./config",
+    "env:prod": "expo-env --env=production --configPath=./config"
   },
   "jest": {
     "preset": "jest-expo"
@@ -17,6 +19,7 @@
     "@react-navigation/web": "^1.0.0-alpha.9",
     "@types/styled-components": "4.1.5",
     "expo": "^37.0.0",
+    "expo-env": "^1.1.1",
     "expo-asset": "~8.1.4",
     "expo-constants": "~9.0.0",
     "expo-font": "~8.1.0",
@@ -27,6 +30,8 @@
     "react-dom": "16.9.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-37.0.1.tar.gz",
     "react-native-button": "^2.3.0",
+    "react-native-svg": "^12.1.0",
+    "react-native-svg-transformer": "^0.14.3",
     "react-native-gesture-handler": "~1.6.0",
     "react-native-web": "^0.11.7",
     "react-navigation": "^3.12.0",

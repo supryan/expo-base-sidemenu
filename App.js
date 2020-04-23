@@ -4,6 +4,8 @@ import * as Font from 'expo-font';
 import React, { useState, useEffect } from 'react';
 import { Platform, StatusBar, DeviceEventEmitter, AppState } from 'react-native';
 import { getCachedAssets, Fonts } from './constants/Assets';
+import { ThemeProvider } from 'styled-components/native';
+import Theme from './constants/Theme';
 
 // https://github.com/mobxjs/mobx-react-lite#observer-batching
 import 'mobx-react-lite/batchingForReactNative';
@@ -60,7 +62,7 @@ export default function App(props) {
         );
     } else {
         return (
-            <Base>
+            <ThemeProvider theme={Theme}>
                 {Platform.OS === 'ios' && <StatusBar barStyle="light-content" />}
                 <AppNavigator
                     onNavigationStateChange={_handleStateChanges}
@@ -68,7 +70,8 @@ export default function App(props) {
                         NavigationService.setTopLevelNavigator(navigatorRef);
                     }}
                 />
-            </Base>
+                <Base />
+            </ThemeProvider>
         );
     }
 }

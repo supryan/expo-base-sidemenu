@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ActivityIndicator, StatusBar } from 'react-native';
 import styled from 'styled-components/native';
+import { observer } from 'mobx-react';
+import { useStores } from '../../utils/hooks';
 
 const AuthLoadingScreenView = styled.View`
     flex: 1;
@@ -8,25 +10,27 @@ const AuthLoadingScreenView = styled.View`
     justify-content: center;
 `;
 
-export default class AuthLoadingScreen extends React.Component {
-    constructor(props) {
-        super(props);
-        this._bootstrapAsync();
-    }
+const AuthLoadingScreen = observer(({ navigation }) => {
+    const { user } = useStores();
 
-    // Fetch the token from storage then navigate to our appropriate place
-    _bootstrapAsync = async () => {
-        const authState = true;
-        this.props.navigation.navigate(authState ? 'Main' : 'Auth');
-    };
+    useEffect(() => {
+        // Fetch the token from storage then navigate to our appropriate place
+        const _bootstrapAsync = async () => {
+            await user.init();
+            const authState = user.isAuthenticated;
+            navigation.navigate(authState ? 'Main' : 'Auth');
+        };
+
+        _bootstrapAsync();
+    }, []);
 
     // Render any loading content that you like here
-    render() {
-        return (
-            <AuthLoadingScreenView>
-                <ActivityIndicator />
-                <StatusBar barStyle="light-content" />
-            </AuthLoadingScreenView>
-        );
-    }
-}
+    return (
+        <AuthLoadingScreenView>
+            <ActivityIndicator />
+            <StatusBar barStyle="light-content" />
+        </AuthLoadingScreenView>
+    );
+});
+
+export default AuthLoadingScreen;
