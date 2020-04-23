@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Animated, ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
 import { PropTypes } from 'prop-types';
@@ -34,20 +34,17 @@ const AnimatedLoaderView = Animated.createAnimatedComponent(LoaderView);
 export const Loader = ({ loading, overlay }) => {
     const [animation] = useState(new Animated.Value(0));
 
-    useEffect(() => {
-        if (loading) {
-            playAnimation();
-        } else {
-            playAnimation(true);
-        }
-    });
-
-    const playAnimation = reverse => {
+    const playAnimation = useCallback(reverse => {
         Animated.timing(animation, {
             toValue: reverse ? 0 : 1,
-            duration: 300
+            duration: 300,
+            useNativeDriver: true
         }).start();
-    };
+    }, []);
+
+    useEffect(() => {
+        playAnimation(!loading);
+    }, [loading]);
 
     return (
         <AnimatedLoaderView style={{ opacity: animation }} overlay={overlay} pointerEvents={loading ? 'auto' : 'none'}>

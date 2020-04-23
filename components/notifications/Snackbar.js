@@ -46,6 +46,7 @@ const SnackbarText = styled.Text`
     padding-horizontal: ${({ theme }) => theme.spacing.sm}px;
     text-align: ${props => (props.align ? 'left' : 'center')};
     flex-shrink: 1;
+    width: 100%;
 `;
 
 const SnackbarButton = styled(Button).attrs(props => ({
@@ -69,7 +70,7 @@ const SnackbarButton = styled(Button).attrs(props => ({
 
 const AnimatedSnackbarView = Animated.createAnimatedComponent(SnackbarView);
 
-export const Snackbar = ({ tabsHeight = 0, overflow = true, delay = DELAY + 400, button = 'OK', message, route, ...props }) => {
+export const Snackbar = ({ tabsHeight = 0, overflow = true, delay = DELAY + 400, button = 'OK', message, route, onSnackBarHide }) => {
     const [height, setHeight] = useState(0);
     const [end] = useState(-TABBAR_MARGIN);
     const [start] = useState(Layout.headerHeight + Layout.statusBarHeight + (tabsHeight || 0));
@@ -82,6 +83,10 @@ export const Snackbar = ({ tabsHeight = 0, overflow = true, delay = DELAY + 400,
     };
 
     const toggle = useCallback(() => {
+        if (snackbarTimeout) {
+            clearTimeout(snackbarTimeout);
+        }
+
         Animated.timing(snackbar, {
             toValue: 1,
             delay: 400,
@@ -90,11 +95,10 @@ export const Snackbar = ({ tabsHeight = 0, overflow = true, delay = DELAY + 400,
             useNativeDriver: true
         }).start(() => {
             snackbarTimeout = setTimeout(() => {
-                clearTimeout(snackbarTimeout);
                 hide();
             }, delay);
         });
-    }, [hide]);
+    }, []);
 
     const hide = useCallback(() => {
         Animated.timing(snackbar, {
@@ -102,7 +106,9 @@ export const Snackbar = ({ tabsHeight = 0, overflow = true, delay = DELAY + 400,
             duration: 400,
             easing: Easing.in(Easing.cubic),
             useNativeDriver: true
-        }).start();
+        }).start(() => {
+            onSnackBarHide();
+        });
     }, []);
 
     useEffect(() => {
@@ -158,5 +164,5 @@ Snackbar.propTypes = {
     route: PropTypes.string,
     delay: PropTypes.number,
     tabsHeight: PropTypes.number,
-    onButtonPress: PropTypes.func
+    onSnackBarHide: PropTypes.func.isRequired
 };

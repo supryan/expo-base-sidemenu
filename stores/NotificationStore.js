@@ -12,13 +12,14 @@ export class NotificationStore {
 
     // Show loader
     showLoader() {
-        clearTimeout(this.loaderTimeout);
+        if (this.loaderTimeout) {
+            clearTimeout(this.loaderTimeout);
+        }
 
         this.loading = true;
 
         // Auto hide
         this.loaderTimeout = setTimeout(() => {
-            clearTimeout(this.loaderTimeout);
             this.loading = false;
         }, LOADING_TIMEOUT);
     }
@@ -27,8 +28,7 @@ export class NotificationStore {
         // Have a timeout to hide due to the delay to start the animation
         setTimeout(() => {
             this.loading = false;
-            clearTimeout(this.loaderTimeout);
-        }, 0);
+        }, 500);
     }
 
     // Show alert, wait for promise
@@ -38,10 +38,7 @@ export class NotificationStore {
 
     // Hide alert
     hideSnackbar(index) {
-        // Remove from notifiers array after animation
-        setTimeout(() => {
-            this.notifiers.splice(index, 1);
-        }, 500);
+        this.notifiers.splice(index, 1);
     }
 
     // Loop through queue and instantiate Snackbar component
@@ -62,6 +59,7 @@ export class NotificationStore {
                         route={message.route}
                         button={message.button}
                         params={message.params}
+                        onSnackBarHide={() => this.hideSnackbar(index)}
                     />
                 );
             }
