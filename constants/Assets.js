@@ -2,7 +2,11 @@ import { flatten } from '../utils/helpers';
 import { Ionicons } from '@expo/vector-icons';
 
 // Media
-export const Assets = {};
+export const Assets = {
+    elements: {
+        logo: require('../assets/images/icon.png')
+    }
+};
 
 // Fonts
 export const Fonts = {
