@@ -53,7 +53,7 @@ export class NotificationStore {
     get initSnackbar() {
         return this.notifiers.map((message, index) => {
             // Only render most recent snackbar
-            if (index === this.notifiers.length - 1) {
+            if (index === this.notifiers.length - 1 && !this.loading) {
                 return (
                     <Snackbar
                         key={index}
