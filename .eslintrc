@@ -1,0 +1,26 @@
+{
+    "parser": "babel-eslint",
+    "env": {
+        "react-native/react-native": true
+    },
+    "ecmaFeatures": {
+        "jsx": true
+    },
+    "plugins": ["react", "react-native", "prettier"],
+    "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:prettier/recommended", "prettier"],
+    "rules": {
+        "prettier/prettier": ["error", { "singleQuote": true, "jsxBracketSameLine": true, "tabWidth": 4, "printWidth": 140 }],
+        "no-console": "off",
+        "react/prop-types": "off",
+        "no-unused-vars": "warn",
+        "react/display-name": "off",
+        "react/no-unescaped-entities": "off",
+        "react/no-deprecated": "warn"
+    },
+    "parserOptions": {
+        "ecmaFeatures": {
+            "legacyDecorators": true,
+            "jsx": true
+        }
+    }
+}

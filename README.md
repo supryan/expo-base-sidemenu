@@ -75,7 +75,7 @@ this.eventListener.remove();
 Thanks to the power of MobX, we include some custom made components for displaying global notifications and loaders in any component. Here's an example component on how to show the global loader. You must first inject the `NotificationStore` with MobX to your component. Then you can use `notifications` as a prop:
 
 ```jsx
-import { inject, observer } from 'mobx-react/native';
+import { inject, observer } from 'mobx-react';
 
 // Uses NotificationStore.js
 const Component = inject('notifications')(

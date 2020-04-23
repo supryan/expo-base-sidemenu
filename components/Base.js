@@ -1,26 +1,26 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react/native';
+import { observer } from 'mobx-react';
 import styled, { ThemeProvider } from 'styled-components/native';
 import Theme from '../constants/Theme';
+import { useStores } from '../utils/hooks';
 
-const Base = inject('notifications')(
-  observer(({ notifications, children }) => {
+const Base = observer(({ children }) => {
+    const { notifications } = useStores();
     const { initLoader, initSnackbar } = notifications;
 
     const BaseView = styled.View`
-      flex: 1;
+        flex: 1;
     `;
 
     return (
-      <ThemeProvider theme={Theme}>
-        <BaseView>
-          {children}
-          {initLoader}
-          {initSnackbar}
-        </BaseView>
-      </ThemeProvider>
+        <ThemeProvider theme={Theme}>
+            <BaseView>
+                {children}
+                {initLoader}
+                {initSnackbar}
+            </BaseView>
+        </ThemeProvider>
     );
-  })
-);
+});
 
 export default Base;

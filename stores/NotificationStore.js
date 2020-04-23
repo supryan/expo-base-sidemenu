@@ -1,67 +1,81 @@
 import React from 'react';
-import { observable, action, computed, when, toJS } from 'mobx';
+import { observable, action, computed, decorate } from 'mobx';
 import { Loader } from '../components/notifications/Loader';
 import { Snackbar } from '../components/notifications/Snackbar';
 
 const LOADING_TIMEOUT = 3000; // 3 sec
 
-class NotificationStore {
-  loaderTimeout;
+export class NotificationStore {
+    loaderTimeout;
+    loading = false;
+    notifiers = [];
 
-  @observable loading = false;
+    // Show loader
+    showLoader() {
+        clearTimeout(this.loaderTimeout);
 
-  @observable notifiers = [];
+        this.loading = true;
 
-  // Show loader
-  @action showLoader() {
-    clearTimeout(this.loaderTimeout);
+        // Auto hide
+        this.loaderTimeout = setTimeout(() => {
+            clearTimeout(this.loaderTimeout);
+            this.loading = false;
+        }, LOADING_TIMEOUT);
+    }
 
-    this.loading = true;
+    hideLoader() {
+        // Have a timeout to hide due to the delay to start the animation
+        setTimeout(() => {
+            this.loading = false;
+            clearTimeout(this.loaderTimeout);
+        }, 0);
+    }
 
-    // Auto hide
-    this.loaderTimeout = setTimeout(() => {
-      clearTimeout(this.loaderTimeout);
-      this.loading = false;
-    }, LOADING_TIMEOUT);
-  }
+    // Show alert, wait for promise
+    showSnackbar(message) {
+        this.notifiers.push(message);
+    }
 
-  @action hideLoader() {
-    // Have a timeout to hide due to the delay to start the animation
-    setTimeout(() => {
-      this.loading = false;
-      clearTimeout(this.loaderTimeout);
-    }, 0);
-  }
+    // Hide alert
+    hideSnackbar(index) {
+        // Remove from notifiers array after animation
+        setTimeout(() => {
+            this.notifiers.splice(index, 1);
+        }, 500);
+    }
 
-  // Show alert, wait for promise
-  @action showSnackbar(message) {
-    this.notifiers.push(message);
-  }
+    // Loop through queue and instantiate Snackbar component
+    get initLoader() {
+        return <Loader loading={this.loading} />;
+    }
 
-  // Hide alert
-  @action hideSnackbar(index) {
-    // Remove from notifiers array after animation
-    setTimeout(() => {
-      this.notifiers.splice(index, 1);
-    }, 500);
-  }
-
-  // Loop through queue and instantiate Snackbar component
-  @computed get initLoader() {
-    return <Loader loading={this.loading} />;
-  }
-
-  // Loop through queue and instantiate Snackbar component
-  @computed get initSnackbar() {
-    return this.notifiers.map((message, index) => {
-      // Only render most recent snackbar
-      if (index === this.notifiers.length - 1) {
-        return (
-          <Snackbar key={index} tabsHeight={message.offset} message={message.text} route={message.route} button={message.button} params={message.params} />
-        );
-      }
-    });
-  }
+    // Loop through queue and instantiate Snackbar component
+    get initSnackbar() {
+        return this.notifiers.map((message, index) => {
+            // Only render most recent snackbar
+            if (index === this.notifiers.length - 1) {
+                return (
+                    <Snackbar
+                        key={index}
+                        tabsHeight={message.offset}
+                        message={message.text}
+                        route={message.route}
+                        button={message.button}
+                        params={message.params}
+                    />
+                );
+            }
+        });
+    }
 }
 
-export default new NotificationStore();
+decorate(NotificationStore, {
+    loading: observable,
+    notifiers: observable,
+    showLoader: action,
+    hideLoader: action,
+    showSnackbar: action,
+    hideSnackbar: action,
+    initLoader: computed,
+    initSnackbar: computed
+});
